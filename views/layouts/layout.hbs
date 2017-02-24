@@ -1,0 +1,38 @@
+﻿
+<html>
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1"/>
+    <meta name="renderer" content="webkit"/>
+    <title></title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="/public/img/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+
+    <link rel="stylesheet" type="text/css" href="/public/vender/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/public/css/icon.css"/>
+
+    <link href="/public/css/common.css" rel="stylesheet" type="text/css"/>
+    <link href="/public/css/link.css" rel="stylesheet" type="text/css"/>
+    <link href="/public/css/style.css" rel="stylesheet" type="text/css"/>
+    <script src="/public/vender/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script src="/public/vender/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/socket.io/socket.io.js" charset="utf-8"></script>
+    <style>
+       body{
+            background: url('../../public/img/wend4.jpg') !important;
+        }
+    </style>
+    <!-- 需要嵌入的部分 -->
+    {{>header}}
+</head>
+
+<body>
+    {{{body}}}<!-- 留一个坑，在express渲染的才嵌入进来，这个body就是未来，你选择模板render的页面-->
+    <!-- 两个括号是原文，不当做html解析，3个括号才行  -->
+</body>
+<!-- 需要嵌入的部分 -->
+  {{>footer}}
+</html>

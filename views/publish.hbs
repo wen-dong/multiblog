@@ -1,0 +1,138 @@
+﻿
+    <link rel="stylesheet" href="/public/vender/editor/editor.css">
+
+    <div class="aw-container-wrap">
+        <div class="container aw-publish aw-publish-article">
+            <div class="row">
+                <div class="aw-content-wrap clearfix">
+                    <div class="col-sm-12 col-md-9 aw-main-content">
+                        <!-- tab 切换 -->
+
+                        <!-- end tab 切换 -->
+                        <form action="/publish/article" method="post" id="article_form">
+                            <div class="aw-mod aw-mod-publish">
+                                <div class="mod-body">
+                                    <h3>文章标题:</h3>
+                                    <!-- 文章标题 -->
+                                    <div class="aw-publish-title active">
+                                        <input type="text" name="title" id="title" class="form-control"/>
+                                    </div>
+                                    <!-- end 文章标题 -->
+
+                                    <h3>文章内容:</h3>
+                                    <div class="aw-mod aw-editor-box">
+                                        <div class="mod-head">
+                                            <div class="wmd-panel">
+                                                <div id="wmd-button-bar"></div>
+                      <textarea class="wmd-input form-control autosize" id="wmd-input" rows="15"
+                                name="content"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="mod-body">
+                                            <p class="text-color-999"><span class="pull-right" id="question_detail_message">&nbsp;</span>
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="mod-footer clearfix">
+                                    <input type="submit" class="btn btn-large btn-success btn-publish-submit" value="确认发起">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- 侧边栏 -->
+                    <div class="col-sm-12 col-md-3 aw-side-bar hidden-xs">
+                        <!-- 文章发起指南 -->
+                        <div class="aw-mod publish-help">
+                            <div class="mod-head">
+                                <h3>文章发起指南</h3>
+                            </div>
+                            <div class="mod-body">
+                                <p><b>• 文章标题:</b> 请用准确的语言描述您发布的文章思想</p>
+                                <p><b>• 文章补充:</b> 详细补充您的文章内容, 并提供一些相关的素材以供参与者更多的了解您所要文章的主题思想</p>
+                                <p><b>• 选择话题:</b> 选择一个或者多个合适的话题, 让您发布的文章得到更多有相同兴趣的人参与. 所有人可以在您发布文章之后添加和编辑该文章所属的话题</p>
+                            </div>
+                        </div>
+                        <!-- end 文章发起指南 -->
+                    </div>
+                    <!-- end 侧边栏 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">上传图片</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">请选择要上传的图片:</label>
+                            <input type="file" class="form-control" id="pic_file">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn" type="button" class="btn btn-default" data-dismiss="modal">完成</button>
+                    <button type="button" class="btn btn-primary" id="btn_upload">点击上传</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/vender/editor/editor.js"></script>
+    <script src="/public/vender/editor/marked.js"></script>
+    <script>
+        var editor = new Editor({
+            element: document.querySelector('#wmd-input')
+        });
+
+        editor.render();
+
+        //  var content = editor.codemirror.getValue();//获取当前文本的内容
+
+
+        $('.editor-toolbar > .icon-image').on('click', function (e) {
+            e.preventDefault();
+            $('#myModal').modal();
+
+        });
+
+        $('#btn_upload').on('click', function () {
+            //forData对象
+            var formData = new FormData();
+            //获取页面元素的值，加入到formData
+            formData.append('pic',document.getElementById('pic_file').files[0]);
+            //1 ：创建xmlhttprequest对象
+            var xhr = new XMLHttpRequest();
+            //2 : 设置，open（请求方式，URL）
+            xhr.open('post','/upload');
+            //3: 监听响应状态，获取数据
+            xhr.onreadystatechange = function(){
+              if(xhr.status == 200 && xhr.readyState == 4){
+                //  alert(xhr.responseText);
+                //返回的是一个字符串，接收内部的path:value
+                var path = JSON.parse(xhr.responseText).path;//path:'/public'
+                alert(path);
+                //这个路径可以访问服务器，。通过express内置中间件的获取资源的路径
+                //把之前的内容，追加现在的内容 以md形式追加
+                var content = editor.codemirror.getValue() + '![图片]('+path+')';
+                //将内容set进去文本框
+                editor.codemirror.setValue(content);
+                //关闭模态框
+                document.getElementById('btn').click();//触发这个事件
+              }
+            }
+            //4：发送数据
+            xhr.send(formData);
+        });
+
+    </script>
